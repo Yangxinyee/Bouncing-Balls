@@ -7,183 +7,220 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
-import java.util.Random;
 
+/**
+ * The BallPanel class represents a drawing area where balls can be created,
+ * moved, resized, and detected for collisions. It handles mouse events and
+ * updates the panel at regular intervals.
+ */
 public class BallPanel extends JPanel implements ActionListener, MouseMotionListener, MouseListener {
-    private List<Ball> balls;  // 小球列表
-    private Timer timer;       // 定时器用于更新和重绘
-    private Ball resizingBall = null; // 当前正在调整大小的小球
-    private Timer resizeTimer;        // 定时器用于定时调整大小
-    private boolean isMouseInside; // 标志变量，表示鼠标是否在窗口内
-    private boolean increaseSize = false;  // 标志变量，表示是否增大
-    private boolean decreaseSize = false;  // 标志变量，表示是否减小
-    private Random random; // 随机数生成器
+    private List<Ball> balls;           // List of balls
+    private Timer timer;                // Timer for updating and repainting
+    private Ball resizingBall = null;    // The ball currently being resized
+    private Timer resizeTimer;           // Timer for periodic resizing
+    private boolean isMouseInside;       // Flag indicating if the mouse is within the panel
+    private boolean increaseSize = false; // Flag indicating if the ball is increasing in size
+    private boolean decreaseSize = false; // Flag indicating if the ball is decreasing in size
+    private Random random;               // Random number generator
 
+    /**
+     * Constructor to initialize the BallPanel.
+     */
     public BallPanel() {
-        balls = new ArrayList<>(); // 初始化小球列表
-        random = new Random(); // 初始化随机数生成器
-        setBackground(Color.WHITE); // 设置背景为白色
+        balls = new ArrayList<>();        // Initialize the list of balls
+        random = new Random();             // Initialize the random number generator
+        setBackground(Color.WHITE);        // Set the background color to white
 
-        // 创建定时器，每隔 10 毫秒更新一次面板
-        timer = new Timer(8, new ActionListener() {
+        // Timer for updating the ball positions and repainting the panel
+        timer = new Timer(16, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                moveBalls();  // 更新小球位置
-                repaint();    // 重绘面板
+                moveBalls();                // Update the positions of the balls
+                repaint();                  // Repaint the panel
             }
         });
-        timer.start(); // 启动定时器
+        timer.start();                      // Start the timer
 
-        // 用于定时调整大小的定时器
+        // Timer for resizing the selected ball
         resizeTimer = new Timer(100, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (resizingBall != null) {
+                    // Increase or decrease the radius of the resizing ball
                     if (increaseSize) {
-                        resizingBall.setRadius(resizingBall.getRadius() + 3); // 增加半径
+                        resizingBall.setRadius(resizingBall.getRadius() + 3); // Increase radius
                     } else if (decreaseSize) {
-                        resizingBall.setRadius(Math.max(5, resizingBall.getRadius() - 3)); // 减少半径，最小为5
+                        resizingBall.setRadius(Math.max(5, resizingBall.getRadius() - 3)); // Decrease radius, minimum 5
                     }
-                    repaint(); // 更新显示
+                    repaint();              // Update display
                 }
             }
         });
 
-        // 添加鼠标监听器，点击时创建新小球
-        addMouseListener(this); // 注册 MouseListener
-        addMouseMotionListener(this); // 添加鼠标移动监听器
-        isMouseInside = true; // 初始状态为鼠标在窗口内
+        // Add mouse listeners for interaction
+        addMouseListener(this);              // Register mouse listener
+        addMouseMotionListener(this);        // Register mouse motion listener
+        isMouseInside = true;                // Initially, the mouse is inside the panel
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (isMouseInside) { // 仅当鼠标在窗口内时更新小球位置
-            moveBalls(); // 更新小球的位置
+        if (isMouseInside) {                  // Only update positions if the mouse is within the panel
+            moveBalls();                     // Update the ball positions
         }
-        repaint();
+        repaint();                            // Repaint the panel
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        isMouseInside = true; // 鼠标移动到窗口内
+        isMouseInside = true;                 // Mouse is within the panel
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-        isMouseInside = false; // 鼠标离开窗口
-        timer.stop(); // 停止定时器
-        resizeTimer.stop(); // 停止调整大小的定时器
+        isMouseInside = false;                // Mouse has exited the panel
+        timer.stop();                         // Stop the timer
+        resizeTimer.stop();                   // Stop the resize timer
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        isMouseInside = true; // 鼠标进入窗口
-        timer.start(); // 重启定时器
+        isMouseInside = true;                 // Mouse has entered the panel
+        timer.start();                        // Restart the timer
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        // Handle left-click to add a new ball
         if (SwingUtilities.isLeftMouseButton(e)) {
             Ball newBall = new Ball(e.getX(), e.getY(), 30);
-            balls.add(newBall); // 将新小球添加到列表
-        } else if (SwingUtilities.isRightMouseButton(e)) {
-            // 随机删除一个小球
+            balls.add(newBall);               // Add the new ball to the list
+        } 
+        // Handle right-click to remove a random ball
+        else if (SwingUtilities.isRightMouseButton(e)) {
             if (!balls.isEmpty()) {
-                int index = random.nextInt(balls.size()); // 生成一个随机索引
-                balls.remove(index); // 删除随机索引对应的小球
-                }
+                int index = random.nextInt(balls.size()); // Generate a random index
+                balls.remove(index);                   // Remove the ball at the random index
             }
         }
+    }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        resizingBall = getBallAt(e.getX(), e.getY());
-            if (resizingBall != null) {
-                if (SwingUtilities.isLeftMouseButton(e)) {  // 长按左键调整大小
-                    increaseSize = true;
-                    resizeTimer.start(); // 启动调整大小的定时器
-                } else if (SwingUtilities.isRightMouseButton(e)) {  // 长按右键缩小大小
-                    decreaseSize = true;
-                    resizeTimer.start(); // 启动调整大小的定时器
-                }
+        resizingBall = getBallAt(e.getX(), e.getY()); // Get the ball at the click position
+        if (resizingBall != null) {
+            // Start resizing based on mouse button pressed
+            if (SwingUtilities.isLeftMouseButton(e)) {
+                increaseSize = true;                  // Start increasing size
+                resizeTimer.start();                   // Start the resize timer
+            } else if (SwingUtilities.isRightMouseButton(e)) {
+                decreaseSize = true;                  // Start decreasing size
+                resizeTimer.start();                   // Start the resize timer
             }
+        }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        increaseSize = false; // 停止增大
-        decreaseSize = false; // 停止缩小
-        resizeTimer.stop(); // 停止调整大小
-        resizingBall = null; // 重置当前调整的小球
-    }
-    @Override
-    public void mouseDragged(MouseEvent e) {
-        // 可以根据需要添加拖动逻辑
-    }
-    // 获取点击位置的小球
-    private Ball getBallAt(int x, int y) {
-        for (Ball ball : balls) {
-            int dx = ball.getX() - x;
-            int dy = ball.getY() - y;
-            double distance = Math.sqrt(dx * dx + dy * dy);
-            if (distance < ball.getRadius()) {
-                return ball;
-            }
-        }
-        return null;
+        // Stop resizing
+        increaseSize = false;
+        decreaseSize = false;
+        resizeTimer.stop();                       // Stop the resize timer
+        resizingBall = null;                      // Reset the resizing ball
     }
 
-    // 删除指定位置的小球
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        // Add logic for dragging if necessary
+    }
+
+    /**
+     * Gets the ball at the specified (x, y) coordinates.
+     *
+     * @param x The x-coordinate
+     * @param y The y-coordinate
+     * @return The ball at the specified coordinates, or null if none exists
+     */
+    private Ball getBallAt(int x, int y) {
+        for (Ball ball : balls) {
+            int dx = ball.getX() - x;              // Difference in x coordinates
+            int dy = ball.getY() - y;              // Difference in y coordinates
+            double distance = Math.sqrt(dx * dx + dy * dy); // Calculate the distance
+            if (distance < ball.getRadius()) {      // Check if within radius
+                return ball;                        // Return the found ball
+            }
+        }
+        return null;                                // No ball found at the coordinates
+    }
+
+    /**
+     * Removes a ball at the specified (x, y) coordinates if it exists.
+     *
+     * @param x The x-coordinate
+     * @param y The y-coordinate
+     */
     public void removeBall(int x, int y) {
         Ball ballToRemove = null;
         for (Ball ball : balls) {
-            int dx = ball.getX() - x;
-            int dy = ball.getY() - y;
-            double distance = Math.sqrt(dx * dx + dy * dy);
+            int dx = ball.getX() - x;              // Difference in x coordinates
+            int dy = ball.getY() - y;              // Difference in y coordinates
+            double distance = Math.sqrt(dx * dx + dy * dy); // Calculate the distance
 
+            // Check if within radius
             if (distance < ball.getRadius()) {
-                ballToRemove = ball;
+                ballToRemove = ball;                 // Found the ball to remove
                 break;
             }
         }
         if (ballToRemove != null) {
-            balls.remove(ballToRemove);
+            balls.remove(ballToRemove);              // Remove the ball from the list
         }
     }
 
-    // 添加新小球
+    /**
+     * Adds a new ball at the specified (x, y) coordinates.
+     *
+     * @param x The x-coordinate
+     * @param y The y-coordinate
+     */
     public void addBall(int x, int y) {
-        balls.add(new Ball(x, y, 30)); // 创建一个半径为30的小球并添加到列表中
+        balls.add(new Ball(x, y, 30));              // Create a ball with radius 30 and add it to the list
     }
 
+    /**
+     * Checks for collisions between all balls in the panel.
+     */
     private void checkCollisions() {
         for (int i = 0; i < balls.size(); i++) {
             for (int j = i + 1; j < balls.size(); j++) {
                 Ball ball1 = balls.get(i);
                 Ball ball2 = balls.get(j);
-                ball1.checkCollision(ball2);
+                ball1.checkCollision(ball2);        // Check for collision between the two balls
             }
         }
     }
 
-    // 更新所有小球的位置
+    /**
+     * Moves all the balls in the panel.
+     */
     private void moveBalls() {
         for (Ball ball : balls) {
-            ball.move(getWidth(), getHeight(), balls); // 更新每个小球的位置
+            ball.move(getWidth(), getHeight(), balls); // Update the position of each ball
         }
-        checkCollisions(); // 每次移动后检查碰撞
+        checkCollisions();                        // Check for collisions after moving
     }
 
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
+        super.paintComponent(g);                 // Call the superclass method
         for (Ball ball : balls) {
-            g.setColor(ball.getColor());
+            g.setColor(ball.getColor());          // Set the color for the ball
             g.fillOval(ball.getX() - ball.getRadius(), ball.getY() - ball.getRadius(),
-                       ball.getRadius() * 2, ball.getRadius() * 2);
+                       ball.getRadius() * 2, ball.getRadius() * 2); // Draw the ball
         }
     }
 }

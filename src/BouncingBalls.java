@@ -1,14 +1,27 @@
 import javax.swing.JFrame;
 
+/**
+ * The BouncingBalls class is the entry point for the Bouncing Balls application.
+ * It initializes the main application window and adds the BallPanel where the balls will be rendered.
+ */
 public class BouncingBalls {
     public static void main(String[] args) {
-        // 创建一个窗口
+        // Create a new JFrame window
         JFrame frame = new JFrame("Bouncing Balls");
+
+        // Set the default close operation to exit the application when the window is closed
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        frame.setSize(800, 600); // 设置窗口大小
-        BallPanel ballPanel = new BallPanel(); // 创建画布
-        frame.add(ballPanel);                  // 将画布添加到窗口中
-        frame.setVisible(true);  // 显示窗口
+        // Set the size of the window
+        frame.setSize(800, 600);
+
+        // Create an instance of BallPanel to manage the ball rendering and interactions
+        BallPanel ballPanel = new BallPanel();
+
+        // Add the BallPanel to the JFrame
+        frame.add(ballPanel);
+
+        // Set the frame's visibility to true to display the window
+        frame.setVisible(true);
     }
 }
