@@ -1,7 +1,7 @@
 import java.awt.Color;
+import java.awt.Graphics;
 import java.util.List;
 import java.util.Random;
-
 /**
  * The Ball class represents a ball with position, velocity, radius, and color.
  * It can move in a 2D space and detect collisions with other balls.
@@ -55,8 +55,8 @@ public class Ball {
             // Swap the velocity components to simulate elastic collision
             int tempDx = this.dx; // Store current velocity
             int tempDy = this.dy;
-            this.dx = (int)(other.dx * 0.9); // Dampen velocity
-            this.dy = (int)(other.dy * 0.9);
+            this.dx = (int)(other.dx * 0.99); // Dampen velocity
+            this.dy = (int)(other.dy * 0.99);
             other.dx = tempDx; // Assign the previous values
             other.dy = tempDy;
         }
@@ -76,11 +76,11 @@ public class Ball {
 
         // Boundary collision detection
         if (x < radius || x > width - radius) {
-            dx = -(int)(dx * 0.9); // Reverse direction with energy loss
+            dx = -(int)(dx * 0.99); // Reverse direction with energy loss
             x = Math.max(radius, Math.min(x, width - radius));
         }
         if (y < radius || y > height - radius) {
-            dy = -(int)(dy * 0.9); // Reverse direction with energy loss
+            dy = -(int)(dy * 0.99); // Reverse direction with energy loss
             y = Math.max(radius, Math.min(y, height - radius));
         }
 
@@ -140,5 +140,9 @@ public class Ball {
      */
     public Color getColor() {
         return color;
+    }
+    public void draw(Graphics g) {
+        g.setColor(color);
+        g.fillOval(x - radius, y - radius, radius * 2, radius * 2);
     }
 }

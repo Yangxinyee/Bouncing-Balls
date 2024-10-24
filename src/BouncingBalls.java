@@ -23,5 +23,13 @@ public class BouncingBalls {
 
         // Set the frame's visibility to true to display the window
         frame.setVisible(true);
+        // 关闭窗口时关闭线程池
+        frame.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                ballPanel.shutdown(); // 关闭线程池
+                System.exit(0); // 退出应用程序
+            }
+        });
     }
 }
