@@ -15,7 +15,7 @@ public class BallTask implements Runnable {
     }
     public void stop() {
         running = false;
-        System.out.println("Stopping task for ball: " + ball);
+        // System.out.println("Stopping task for ball: " + ball);
     }
     @Override
     public void run() {
