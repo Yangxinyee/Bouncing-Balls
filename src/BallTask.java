@@ -7,15 +7,19 @@ import javax.swing.SwingUtilities;
 public class BallTask implements Runnable {
     private Ball ball;
     private BallPanel panel;
+    private volatile boolean running = true;
 
     public BallTask(Ball ball, BallPanel panel) {
         this.ball = ball;
         this.panel = panel;
     }
-
+    public void stop() {
+        running = false;
+        System.out.println("Stopping task for ball: " + ball);
+    }
     @Override
     public void run() {
-        while (true) {
+        while (running) {
             ball.move(panel.getWidth(), panel.getHeight(), panel.getBalls());
             SwingUtilities.invokeLater(() -> panel.repaint());
             try {
@@ -25,5 +29,6 @@ public class BallTask implements Runnable {
                 break;
             }
         }
+        System.out.println("Task stopped for ball: " + ball);
     }
 }

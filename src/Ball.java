@@ -55,8 +55,8 @@ public class Ball {
             // Swap the velocity components to simulate elastic collision
             int tempDx = this.dx; // Store current velocity
             int tempDy = this.dy;
-            this.dx = (int)(other.dx * 0.99); // Dampen velocity
-            this.dy = (int)(other.dy * 0.99);
+            this.dx = (int)(other.dx); // Dampen velocity
+            this.dy = (int)(other.dy);
             other.dx = tempDx; // Assign the previous values
             other.dy = tempDy;
         }
@@ -76,11 +76,11 @@ public class Ball {
 
         // Boundary collision detection
         if (x < radius || x > width - radius) {
-            dx = -(int)(dx * 0.99); // Reverse direction with energy loss
+            dx = -(int)(dx); // Reverse direction with energy loss
             x = Math.max(radius, Math.min(x, width - radius));
         }
         if (y < radius || y > height - radius) {
-            dy = -(int)(dy * 0.99); // Reverse direction with energy loss
+            dy = -(int)(dy); // Reverse direction with energy loss
             y = Math.max(radius, Math.min(y, height - radius));
         }
 
