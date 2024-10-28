@@ -8,4 +8,4 @@
 - **Window:** Adjustable size with a white background. If the mouse is outside the window, it will automatically pause until the mouse is back inside.
 
 Video-demo
-<iframe width="560" height="315" src="https://youtu.be/8mQhXm3litA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[![Video Title](https://img.youtube.com/vi/8mQhXm3litA/0.jpg)](https://www.youtube.com/watch?v=8mQhXm3litA)
