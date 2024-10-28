@@ -6,3 +6,6 @@
 - **Delete:** Right-click to remove a random ball.
 - **Resize:** Long press left mouse button to make the ball bigger and long press right mouse to make the ball smaller.
 - **Window:** Adjustable size with a white background. If the mouse is outside the window, it will automatically pause until the mouse is back inside.
+
+Video-demo
+<iframe width="560" height="315" src="https://youtu.be/8mQhXm3litA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
